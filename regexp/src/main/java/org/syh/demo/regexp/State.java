@@ -13,10 +13,13 @@ public class State {
     private Map<Character, Set<State>> transitions;
     private Map<Character, Set<State>> unmodifiableTransitions;
 
+    public int stateId;
+
     public State(boolean accepting) {
         this.accepting = accepting;
         this.transitions = new HashMap<>();
         this.unmodifiableTransitions = new HashMap<>();
+        this.stateId = -1;
     }
 
     public void addTransitionForAction(char action, State state) {

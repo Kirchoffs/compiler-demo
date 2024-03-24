@@ -1,15 +1,25 @@
 package org.syh.demo.regexp.nfa;
 
-import org.syh.demo.regexp.State;
-import static org.syh.demo.regexp.nfa.Constants.EPSILON;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class NFA {
+import org.syh.demo.regexp.FA;
+import org.syh.demo.regexp.State;
+import static org.syh.demo.regexp.nfa.Constants.EPSILON;
+
+public class NFA implements FA {
     private State inState;
-    public State outState;
+    private State outState;
+    
+    public int startStateId;
+    public Set<Integer> acceptingStateIds;
+    public Set<Character> alphabet;
+    public Map<Integer, Map<Character, List<Integer>>> transitions;
 
     public NFA(State inState, State outState) {
         this.inState = inState;
@@ -18,6 +28,42 @@ public class NFA {
 
     public boolean test(String text) {
         return this.inState.test(text);
+    }
+
+    public void buildNFAGrammarTuple() {
+        startStateId = 0;
+        alphabet = new HashSet<>();
+        acceptingStateIds = new HashSet<>();
+        transitions = new HashMap<>();
+        
+        Set<State> visited = new HashSet<>();
+        dfs(inState, visited);
+    }
+
+    private void dfs(State state, Set<State> visited) {
+        if (visited.contains(state)) {
+            return;
+        }
+        
+        int stateId = visited.size();
+        state.stateId = stateId;
+        visited.add(state);
+
+        if (state.isAcceptingState()) {
+            acceptingStateIds.add(stateId);
+        }
+
+        transitions.put(stateId, new HashMap<>());
+        for (Map.Entry<Character, Set<State>> transition : state.getTransitions().entrySet()) {
+            alphabet.add(transition.getKey());
+            List<Integer> nextStateIds = new ArrayList<>();
+            for (State nextState : transition.getValue()) {
+                dfs(nextState, visited);
+                nextStateIds.add(nextState.stateId);
+            }
+            Collections.sort(nextStateIds);
+            transitions.get(stateId).put(transition.getKey(), nextStateIds);
+        }
     }
 
     public static NFA charNFA(char ch) {

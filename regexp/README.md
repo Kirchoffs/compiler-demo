@@ -9,6 +9,7 @@
 
 ### Regexp to NFA
 #### Thompson's Construction
+The construction begins by building trivial nfas for each character in the input re. Next, it applies the transformations for alternation, concatenation, and closure to the collection of trivial nfas in the order dictated by precedence and parentheses.
 
 ## Compile and Test
 ```
