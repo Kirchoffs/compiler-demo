@@ -46,14 +46,18 @@ public class State {
     }
 
     public boolean test(String text) {
-        return test(text, 0, new HashMap<>());
+        return test(text, 0);
     }
 
-    private boolean test(String text, int index, Map<Integer, Set<State>> visited) {
-        if (visited.computeIfAbsent(index, param -> new HashSet<>()).contains(this)) {
+    private boolean test(String test, int index) {
+        return test(test, index, new HashSet<>());
+    }
+
+    private boolean test(String text, int index, Set<State> visited) {
+        if (visited.contains(this)) {
             return false;
         }
-        visited.get(index).add(this);
+        visited.add(this);
 
         if (index == text.length()) {
             if (accepting) {
@@ -62,7 +66,7 @@ public class State {
         } else {
             char action = text.charAt(index);
             for (State state : getTransistionForAction(action)) {
-                if (state.test(text, index + 1, visited)) {
+                if (state.test(text, index + 1)) {
                     return true;
                 }
             }
