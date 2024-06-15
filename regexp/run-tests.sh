@@ -35,7 +35,7 @@ fi
 
 # Step 3: Run the test class
 echo "Running tests..."
-java -ea -cp ${CLASSES_DIR}:${TEST_CLASSES_DIR} org.syh.demo.regexp.nfa.NFATest
+java -ea -cp ${CLASSES_DIR}:${TEST_CLASSES_DIR} org.syh.demo.regexp.nfa.NFATest && \
 java -ea -cp ${CLASSES_DIR}:${TEST_CLASSES_DIR} org.syh.demo.regexp.dfa.DFATest
 
 # Check if the tests ran successfully

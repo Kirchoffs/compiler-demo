@@ -20,8 +20,10 @@ public class DFA implements FA {
     private Set<Integer> acceptingStateIds;
     private Set<Character> alphabet;
     private Map<Integer, Map<Character, Integer>> transitions;
+    private boolean isMinimized;
 
     public DFA(NFA nfa) {
+        this.isMinimized = false;
         buildDFA(nfa);
     }
 
@@ -82,6 +84,79 @@ public class DFA implements FA {
         this.acceptingStateIds = newAcceptingStateIds;
         this.alphabet = alphabet;
         this.transitions = newTransitions;
+    }
+
+    public void minimizeDFA() {
+        if (isMinimized) {
+            return;
+        }
+
+        Map<Integer, Integer> stateToGroupMapping = new HashMap<>();
+        Map<Integer, Set<Integer>> groupToStatesMapping = new HashMap<>();
+        for (int state : this.transitions.keySet()) {
+            stateToGroupMapping.put(state, acceptingStateIds.contains(state) ? 1 : 0);
+            groupToStatesMapping.computeIfAbsent(stateToGroupMapping.get(state), param -> new HashSet<>()).add(state);
+        }
+
+        boolean iterateFlag = true;
+        while (iterateFlag) {
+            Map<Integer, Integer> newStateToGroupMapping = new HashMap<>();
+            Map<Integer, Set<Integer>> newGroupToStatesMapping = new HashMap<>();
+            
+            int newGroup = 0;
+            for (Set<Integer> states : groupToStatesMapping.values()) {
+                Map<Integer, Set<Integer>> tmpGroupToStatesMapping = null;
+                for (char action : alphabet) {
+                    tmpGroupToStatesMapping = new HashMap<>();
+                    for (int state : states) {
+                        int group = stateToGroupMapping.getOrDefault(this.transitions.get(state).get(action), -1);
+                        tmpGroupToStatesMapping.computeIfAbsent(group, param -> new HashSet<>()).add(state);
+                    }
+                    if (tmpGroupToStatesMapping.size() > 1) {
+                        break;
+                    }
+                }
+                
+                for (Set<Integer> newStates : tmpGroupToStatesMapping.values()) {
+                    for (int state : newStates) {
+                        newStateToGroupMapping.put(state, newGroup);
+                    }
+                    newGroupToStatesMapping.put(newGroup, newStates);
+                    newGroup++;
+                }
+            }
+
+            iterateFlag = newGroupToStatesMapping.size() != groupToStatesMapping.size();
+
+            stateToGroupMapping = newStateToGroupMapping;
+            groupToStatesMapping = newGroupToStatesMapping;
+        }
+
+        int newStartStateId = stateToGroupMapping.get(this.startStateId);
+        Set<Integer> newAcceptingStateIds = new HashSet<>();
+        Map<Integer, Map<Character, Integer>> newTransitions = new HashMap<>();
+        for (Map.Entry<Integer, Set<Integer>> groupInfo : groupToStatesMapping.entrySet()) {
+            int group = groupInfo.getKey();
+            Set<Integer> states = groupInfo.getValue();
+            for (int state : states) {
+                if (this.acceptingStateIds.contains(state)) {
+                    newAcceptingStateIds.add(group);
+                }
+                Map<Character, Integer> newTransition = new HashMap<>();
+                for (char action : alphabet) {
+                    if (this.transitions.get(state).containsKey(action)) {
+                        newTransition.put(action, stateToGroupMapping.get(this.transitions.get(state).get(action)));
+                    }
+                }
+                newTransitions.put(group, newTransition);
+            }
+        }
+
+        this.startStateId = newStartStateId;
+        this.acceptingStateIds = newAcceptingStateIds;
+        this.transitions = newTransitions;
+
+        isMinimized = true;
     }
 
     private Set<Integer> getEpsilonClosure(int stateId, Map<Integer, Map<Character, List<Integer>>> transitions) {

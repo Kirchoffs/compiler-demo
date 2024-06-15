@@ -103,7 +103,7 @@ public class NFATest {
         System.out.println("testQuestionNFA passed");
     }
 
-    public static void testComplexCaseNFA() {
+    public static void testComplexCaseAlphaNFA() {
         NFA nfa = NFA.altNFA(
             NFA.concatNFA(NFA.charNFA('a'), NFA.starNFA(NFA.charNFA('b')), NFA.charNFA('c')),
             NFA.concatNFA(NFA.charNFA('x'), NFA.altNFA(NFA.charNFA('p'), NFA.charNFA('q')), NFA.charNFA('z'))
@@ -119,8 +119,54 @@ public class NFATest {
         assert !nfa.test("a");
         assert !nfa.test("x");
 
-        System.out.println("testComplexCaseNFA passed");
+        System.out.println("testComplexCaseAlphaNFA passed");
     }
+
+    public static void testComplexCaseBetaNFA() {
+        NFA nfa = NFA.concatNFA(
+            NFA.altNFA(NFA.charNFA('a'), NFA.charNFA('b')),
+            NFA.charNFA('c')
+        );
+
+        assert !nfa.test("a");
+        assert !nfa.test("b");
+        assert !nfa.test("c");
+        assert nfa.test("ac");
+        assert nfa.test("bc");
+
+        System.out.println("testComplexCaseBetaNFA passed");
+    }
+
+    public static void testComplexCaseGammaNFA() {
+        NFA nfa = NFA.concatNFA(
+            NFA.starNFA(NFA.altNFA(NFA.charNFA('a'), NFA.charNFA('b'))),
+            NFA.starNFA(NFA.altNFA(NFA.charNFA('c'), NFA.charNFA('d'))),
+            NFA.questionNFA(NFA.charNFA('e')),
+            NFA.plusNFA(NFA.altNFA(
+                NFA.charNFA('f'), 
+                NFA.concatNFA(NFA.charNFA('g'), NFA.charNFA('h'), NFA.starNFA(NFA.charNFA('i')))
+            ))
+        );
+
+        assert !nfa.test("");
+        assert !nfa.test("a");
+        assert !nfa.test("b");
+        assert !nfa.test("c");
+        assert !nfa.test("d");
+        assert !nfa.test("ac");
+        assert !nfa.test("ace");
+        assert nfa.test("acef");
+        assert nfa.test("adeff");
+        assert nfa.test("bcef");
+        assert nfa.test("ef");
+        assert nfa.test("egh");
+        assert nfa.test("eghgh");
+        assert nfa.test("aceff");
+        assert nfa.test("aceghi");
+
+        System.out.println("testComplexCaseGammaNFA passed");
+    }
+
 
     public static void main(String[] args) {
         testCharNFA();
@@ -131,6 +177,8 @@ public class NFATest {
         testNaivePlusNFA();
         testPlusNFA();
         testQuestionNFA();
-        testComplexCaseNFA();
+        testComplexCaseAlphaNFA();
+        testComplexCaseBetaNFA();
+        testComplexCaseGammaNFA();
     }
 }

@@ -101,6 +101,9 @@ public class NFA implements FA {
         State inState = new State(false);
         State outState = new State(true);
 
+        firstNFA.outState.setAcceptingState(false);
+        secondNFA.outState.setAcceptingState(false);
+
         inState.addTransitionForAction(EPSILON, firstNFA.inState);
         inState.addTransitionForAction(EPSILON, secondNFA.inState);
         firstNFA.outState.addTransitionForAction(EPSILON, outState);
@@ -112,6 +115,8 @@ public class NFA implements FA {
     public static NFA naiveStarNFA(NFA nfa) {
         State inState = new State(false);
         State outState = new State(true);
+
+        nfa.outState.setAcceptingState(false);
 
         inState.addTransitionForAction(EPSILON, nfa.inState);
         inState.addTransitionForAction(EPSILON, outState);
