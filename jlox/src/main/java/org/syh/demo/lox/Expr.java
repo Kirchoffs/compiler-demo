@@ -3,14 +3,14 @@ package org.syh.demo.lox;
 import java.util.List;
 
 public abstract class Expr {
-    interface Visitor<R> {
+    public interface Visitor<R> {
         R visitBinaryExpr(Binary expr);
         R visitGroupingExpr(Grouping expr);
         R visitLiteralExpr(Literal expr);
         R visitUnaryExpr(Unary expr);
     }
 
-    abstract <R> R accept(Visitor<R> visitor);
+    public abstract <R> R accept(Visitor<R> visitor);
 
     public static class Binary extends Expr {
         public final Expr left;
@@ -24,7 +24,7 @@ public abstract class Expr {
         }
 
         @Override
-        <R> R accept(Visitor<R> visitor) {
+        public <R> R accept(Visitor<R> visitor) {
             return visitor.visitBinaryExpr(this);
         }
     }
@@ -37,7 +37,7 @@ public abstract class Expr {
         }
 
         @Override
-        <R> R accept(Visitor<R> visitor) {
+        public <R> R accept(Visitor<R> visitor) {
             return visitor.visitGroupingExpr(this);
         }
     }
@@ -50,7 +50,7 @@ public abstract class Expr {
         }
 
         @Override
-        <R> R accept(Visitor<R> visitor) {
+        public <R> R accept(Visitor<R> visitor) {
             return visitor.visitLiteralExpr(this);
         }
     }
@@ -65,7 +65,7 @@ public abstract class Expr {
         }
 
         @Override
-        <R> R accept(Visitor<R> visitor) {
+        public <R> R accept(Visitor<R> visitor) {
             return visitor.visitUnaryExpr(this);
         }
     }

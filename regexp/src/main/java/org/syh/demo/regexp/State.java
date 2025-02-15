@@ -34,7 +34,7 @@ public class State {
     }
 
     public Map<Character, Set<State>> getTransitions() {
-        return unmodifiableTransitions;
+        return Collections.unmodifiableMap(unmodifiableTransitions);
     }
 
     public boolean isAcceptingState() {
