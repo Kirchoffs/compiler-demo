@@ -9,7 +9,7 @@ public class GenerateAst {
         String outputDir = "";
 
         if (args.length > 1) {
-            System.err.println("Usage: generate_ast <output directory>");
+            System.err.println("usage: generate_ast <output directory>");
             System.exit(64);
         } else if (args.length == 1) {
             outputDir = args[0];
@@ -37,7 +37,7 @@ public class GenerateAst {
         writer.println("public abstract class " + baseName + " {");
         defineVisitor(writer, baseName, types);
         writer.println();
-        writer.println("    abstract <R> R accept(Visitor<R> visitor);");
+        writer.println("    public abstract <R> R accept(Visitor<R> visitor);");
         writer.println();
         for (int i = 0; i < types.size(); i++) {
             String type = types.get(i);
@@ -50,7 +50,7 @@ public class GenerateAst {
     }
 
     private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {
-        writer.println("    interface Visitor<R> {");
+        writer.println("    public interface Visitor<R> {");
 
         for (String type : types) {
             String typeName = type.split(":")[0].trim();
@@ -75,7 +75,7 @@ public class GenerateAst {
         writer.println("        }");
         writer.println();
         writer.println("        @Override");
-        writer.println("        <R> R accept(Visitor<R> visitor) {");
+        writer.println("        public <R> R accept(Visitor<R> visitor) {");
         writer.println("            return visitor.visit" + className + baseName + "(this);");
         writer.println("        }");
         writer.println("    }");

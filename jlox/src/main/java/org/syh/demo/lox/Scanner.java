@@ -48,7 +48,7 @@ public class Scanner {
 
     public List<Token> scanTokens() {
         if (source == null || source.isEmpty()) {
-            Lox.error(line, "No source code to scan.");
+            Lox.error(line, "no source code to scan.");
             return tokens;
         }
 
@@ -121,7 +121,7 @@ public class Scanner {
                 } else if (isAlpha(ch)) {
                     identifier();
                 } else {
-                    Lox.error(line, "Unexpected character.");
+                    Lox.error(line, "unexpected character.");
                 }
                 break;
         }
@@ -134,7 +134,7 @@ public class Scanner {
         }
 
         if (isAtEnd()) {
-            Lox.error(line, "Unterminated string.");
+            Lox.error(line, "unterminated string.");
             return;
         }
 
@@ -169,7 +169,7 @@ public class Scanner {
 
         while (nesting > 0) {
             if (isAtEnd()) {
-                Lox.error(line, "Unterminated block comment.");
+                Lox.error(line, "unterminated block comment.");
                 return;
             }
 

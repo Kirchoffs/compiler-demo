@@ -8,7 +8,7 @@ public class Token {
 
     // Difference between lexeme and literal:
     // - lexeme: the string representation of the token
-    // - literal: the value of the token, if it's a literal (string or number), otherwise null
+    // - literal: the value of the token if it is a literal (string or number), otherwise null
     public Token(TokenType type, String lexeme, Object literal, int line) {
         this.type = type;
         this.lexeme = lexeme;

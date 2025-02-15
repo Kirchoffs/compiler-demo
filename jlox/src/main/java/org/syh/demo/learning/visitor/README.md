@@ -16,7 +16,7 @@ Two way to apply visitor pattern:
 - `this` contains the exact type of Element, so visitor can do specific operation.
 
 ## Visitor Pattern with Additional Context Parameter
-```
+```java
 public interface Element {
     void accept(Visitor visitor, Context context);
 }
@@ -26,6 +26,13 @@ public class ConcreteAlphaElement implements Element {
     public void accept(Visitor visitor, Context context) {
         visitor.visit(this, context);
     }
+
+    // Another form:
+    // 
+    // @Override
+    // public void accept(Visitor visitor, Context context) {
+    //     visitor.visitAlphaElement(this, context);
+    // }
 }
 
 public class ConcreteBetaElement implements Element {
@@ -33,10 +40,17 @@ public class ConcreteBetaElement implements Element {
     public void accept(Visitor visitor, Context context) {
         visitor.visit(this, context);
     }
+
+    // Another form:
+    // 
+    // @Override
+    // public void accept(Visitor visitor, Context context) {
+    //     visitor.visitBetaElement(this, context);
+    // }
 }
 ```
 
-```
+```java
 public interface Visitor {
     default void visit(Element element, Context context) {
         element.accept(this, context);
@@ -44,30 +58,55 @@ public interface Visitor {
 
     void visit(ConcreteAlphaElement element, Context context);
     void visit(ConcreteBetaElement element, Context context);
+
+    // Another form:
+    //
+    // void visitAlphaElement(ConcreteAlphaElement element, Context context);
+    // void visitBetaElement(ConcreteBetaElement element, Context context);
 }
 
 public class ConcreteFirstVisitor implements Visitor {
-    private void visit(ConcreteAlphaElement element, Context context) {
+    public void visit(ConcreteAlphaElement element, Context context) {
         // do something with element and context
     }
 
-    private void visit(ConcreteBetaElement element, Context context) {
+    public void visit(ConcreteBetaElement element, Context context) {
         // do something with element and context
     }
+
+    // Another form:
+    //
+    // public void visitAlphaElement(ConcreteAlphaElement element, Context context) {
+    //     ...
+    // }
+    //
+    // public void visitBetaElement(ConcreteBetaElement element, Context context) {
+    //     ...
+    // }
 }
 
 public class ConcreteSecondVisitor implements Visitor {
-    private void visit(ConcreteAlphaElement element, Context context) {
+    public void visit(ConcreteAlphaElement element, Context context) {
         // do something with element and context
     }
 
-    private void visit(ConcreteBetaElement element, Context context) {
+    public void visit(ConcreteBetaElement element, Context context) {
         // do something with element and context
     }
+
+    // Another form:
+    //
+    // public void visitAlphaElement(ConcreteAlphaElement element, Context context) {
+    //     ...
+    // }
+    //
+    // public void visitBetaElement(ConcreteBetaElement element, Context context) {
+    //     ...
+    // }
 }
 ```
 
-```
+```java
 Element alphaElement = new ConcreteAlphaElement();
 Element betaElement = new ConcreteBetaElement();
 
